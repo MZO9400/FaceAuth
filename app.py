@@ -20,7 +20,8 @@ def hello():
 
 @app.route('/register', methods=["POST"])
 def register():
-    img = Image.open(request.files['file'])
+    img = Image.open(request.files["image"])
     img = np.array(img)
     img = cv2.cvtColor(np.array(img), cv2.COLOR_BGR2RGB)
-    face_verification.registration(img, request.form['username'])
+    face_verification.registration(img, request.form["username"])
+    return 200
