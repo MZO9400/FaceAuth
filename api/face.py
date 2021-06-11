@@ -5,7 +5,23 @@ class FaceVerification:
         self.client = client
 
     def registration(self, username, image):
-        pass
+        if not self.client.is_unique(username):
+            return {
+                "success": False,
+                "error": "Username is not unique"
+            }
+        if self.count_people_in_image(image) != 1:
+            return {
+                "success": False,
+                "error": "Picture should only have one person"
+            }
+        insert = self.client.insert({
+                     "username": username,
+                     "encodings": self.get_facial_structure(image).tolist()
+                 })
+        return {
+            "success": insert
+        }
 
     def authenticate(self, image, username = None):
         if self.count_people_in_image(image) != 1:
