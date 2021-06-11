@@ -11,7 +11,7 @@ class FaceVerification:
         pass
 
     def get_facial_structure(self, image):
-        pass
+        return face_recognition.face_encodings(image)[0]
 
     def count_people_in_image(self, image):
         return len(face_recognition.face_locations(image))
