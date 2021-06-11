@@ -14,4 +14,4 @@ class FaceVerification:
         pass
 
     def count_people_in_image(self, image):
-        pass
+        return len(face_recognition.face_locations(image))
