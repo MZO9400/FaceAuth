@@ -19,3 +19,6 @@ class FaceEncodings:
             return self.collection.find_one({'username': username})
         else:
             return self.collection.find()
+
+    def is_unique(self, username):
+        return True if self.collection.find({'username': username}).count() == 0 else False
