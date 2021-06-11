@@ -1,13 +1,17 @@
 import face_recognition
 
-def registration():
-    pass
+class FaceVerification:
+    def __init__(self, client):
+        self.client = client
 
-def authenticate():
-    pass
+    def registration(self, username, image):
+        pass
 
-def get_facial_structure():
-    pass
+    def authenticate(self, image, username = None):
+        pass
 
-def count_people_in_image():
-    pass
+    def get_facial_structure(self, image):
+        pass
+
+    def count_people_in_image(self, image):
+        pass
