@@ -80,6 +80,12 @@ class VideoProcessor:
         else:
             return None
 
+    def enable_video_source(self):
+        if not self.vid.isOpened():
+            self.vid.open(self.video_source)
+        if not self.vid.isOpened():
+            raise ValueError("Unable to open video source", self.video_source)
+
     def disable_video_source(self):
         if self.vid.isOpened():
             self.vid.release()
