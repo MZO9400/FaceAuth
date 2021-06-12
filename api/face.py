@@ -52,6 +52,7 @@ class FaceVerification:
             index = None
             if True in face_array:
                 index = face_array.index(True)
+
             if index is not None:
                 return {
                     "success": True,
