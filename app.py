@@ -27,5 +27,5 @@ def register_post():
     img = Image.open(image).convert('RGB')
     registration_response = face_verification.registration(image=np.array(img), username=username)
     if registration_response['success']:
-        return {"code": 200}
-    return {"code": 400, "error": registration_response['error']}
+        return render_template('success.html', data=registration_response)
+    return render_template('failure.html', data=registration_response)
