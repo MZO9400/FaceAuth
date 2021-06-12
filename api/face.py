@@ -59,7 +59,8 @@ class FaceVerification:
                 }
             else:
                 return {
-                    "success": False
+                    "success": False,
+                    "error": "User not found"
                 }
 
     def get_facial_structure(self, image):
