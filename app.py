@@ -26,12 +26,15 @@ def register_get():
 @app.route('/register', methods=["POST"])
 def register_post():
     username = request.form.get('username')
-    image = request.files['image']
-    img = Image.open(image).convert('RGB')
+    image = request.form['image']
+    img = base64.b64decode(image)
+    img = cv2.imdecode(np.fromstring(img, np.uint8), cv2.IMREAD_ANYCOLOR)
     registration_response = face_verification.registration(image=np.array(img), username=username)
     if registration_response['success']:
-        return {"code": 200}.update(registration_response)
-    return {"code": 400}.update(registration_response)
+        registration_response.update({"code": 200})
+    else:
+        registration_response.update({"code": 400})
+    return json.dumps(registration_response)
 
 
 @app.route("/login", methods=["GET"])
