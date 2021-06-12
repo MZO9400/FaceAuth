@@ -42,7 +42,7 @@ class FaceVerificationClient:
     def login(self):
         self.vid.disable_video_source()
         if self.last_frame is None:
-            tkinter.messagebox.showerror(title="Registration failed", message="Could not find image")
+            tkinter.messagebox.showerror(title="Authentication failed", message="Could not find image")
             self.vid.enable_video_source()
             return
         data = {
