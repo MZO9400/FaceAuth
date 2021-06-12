@@ -7,7 +7,7 @@
 <body>
     <div class="container">
         <div class="row">
-            <form enctype="multipart/form-data" method="post" action="/register">
+            <form enctype="multipart/form-data" method="post" action="{{ URL }}">
                 <input id="selected-image" type="file" onchange="readURL(this);" name="image" accept="image/*;capture=camera">
                 <input type="text" name="username" />
                 <input type="submit" />
