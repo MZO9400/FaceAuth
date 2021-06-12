@@ -101,6 +101,8 @@ class FaceVerificationClient:
         locations = face_recognition.face_locations(frame)
         if len(locations) == 1:
             self.last_frame = frame
+        else:
+            self.last_frame = None
 
     def update(self):
         cam_response = self.vid.get_frame()
