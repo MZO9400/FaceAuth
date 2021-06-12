@@ -36,3 +36,14 @@ def login_get():
     return render_template('authenticate.html', URL='/login')
 
 
+@app.route('/login', methods=["POST"])
+def login_post():
+    username = None
+    if request.form['username']:
+        username = request.form.get('username')
+    image = request.files['image']
+    img = Image.open(image).convert('RGB')
+    auth_response = face_verification.authenticate(image=np.array(img), username=username)
+    if auth_response['success']:
+        return render_template('success.html', data=auth_response)
+    return render_template('failure.html', data=auth_response)
