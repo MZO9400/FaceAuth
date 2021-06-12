@@ -1,5 +1,6 @@
 import pymongo
 
+
 class FaceEncodings:
     def __init__(self, connection_string):
         self.__client__ = pymongo.MongoClient(connection_string)
@@ -14,7 +15,7 @@ class FaceEncodings:
         else:
             return False
 
-    def fetch(self, username = None):
+    def fetch(self, username=None):
         if username:
             return self.collection.find_one({'username': username})
         else:

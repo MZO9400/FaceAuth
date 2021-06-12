@@ -1,9 +1,10 @@
-from flask import Flask, render_template, request
-from api.face import FaceVerification
-from db.mongo import FaceEncodings
-from decouple import config
 import cv2
 import numpy as np
+from decouple import config
+from flask import Flask, render_template, request
+
+from api.face import FaceVerification
+from db.mongo import FaceEncodings
 
 app = Flask(__name__)
 
