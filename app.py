@@ -4,7 +4,7 @@ import json
 import cv2
 import numpy as np
 from decouple import config
-from flask import Flask, render_template, request
+from flask import Flask, request
 
 from api.face import FaceVerification
 from db.mongo import FaceEncodings

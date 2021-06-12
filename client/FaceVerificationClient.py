@@ -2,11 +2,11 @@ import base64
 import tkinter
 import tkinter.messagebox
 
+import cv2
 import face_recognition
 import requests
-from PIL import ImageTk
-from PIL import Image
-import cv2
+from PIL import ImageTk, Image
+
 from VideoProcessor import VideoProcessor
 
 
