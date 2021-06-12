@@ -1,6 +1,9 @@
+import base64
 import tkinter
+import tkinter.messagebox
 
 import face_recognition
+import requests
 from PIL import ImageTk
 from PIL import Image
 import cv2
@@ -37,7 +40,28 @@ class FaceVerificationClient:
         self.window.mainloop()
 
     def login(self):
-        pass
+        self.vid.disable_video_source()
+        if self.last_frame is None:
+            tkinter.messagebox.showerror(title="Registration failed", message="Could not find image")
+            self.vid.enable_video_source()
+            return
+        data = {
+            "username": self.username_input.get(),
+            "image": self.encode_last_frame()
+        }
+        response = requests.post(self.api + "/login", data=data)
+        response = response.json()
+        if not response['success']:
+            tkinter.messagebox.showerror(
+                title="Code {}".format(response['code']),
+                message=response['error']
+            )
+        else:
+            tkinter.messagebox.showinfo(
+                title="Success",
+                message=response['username'] if response['username'] else "Username checks out"
+            )
+        self.vid.enable_video_source()
 
     def signup(self):
         pass
