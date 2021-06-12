@@ -27,8 +27,8 @@ def register_post():
     img = Image.open(image).convert('RGB')
     registration_response = face_verification.registration(image=np.array(img), username=username)
     if registration_response['success']:
-        return render_template('success.html', data=registration_response)
-    return render_template('failure.html', data=registration_response)
+        return {"code": 200}.update(registration_response)
+    return {"code": 400}.update(registration_response)
 
 
 @app.route("/login", methods=["GET"])
@@ -45,5 +45,5 @@ def login_post():
     img = Image.open(image).convert('RGB')
     auth_response = face_verification.authenticate(image=np.array(img), username=username)
     if auth_response['success']:
-        return render_template('success.html', data=auth_response)
-    return render_template('failure.html', data=auth_response)
+        return {"code": 200}.update(auth_response)
+    return {"code": 400}.update(auth_response)
