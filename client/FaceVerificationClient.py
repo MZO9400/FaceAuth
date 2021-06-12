@@ -60,7 +60,7 @@ class FaceVerificationClient:
         else:
             tkinter.messagebox.showinfo(
                 title="Success",
-                message=response['username'] if response['username'] else "Username checks out"
+                message=response['username'] if 'username' in response else "Username checks out"
             )
         self.vid.enable_video_source()
 
