@@ -29,3 +29,10 @@ def register_post():
     if registration_response['success']:
         return render_template('success.html', data=registration_response)
     return render_template('failure.html', data=registration_response)
+
+
+@app.route("/login", methods=["GET"])
+def login_get():
+    return render_template('authenticate.html', URL='/login')
+
+
