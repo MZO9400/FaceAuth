@@ -46,7 +46,9 @@ class FaceVerification:
             people = list(self.client.fetch())
             people_encodings = list(map(lambda row: row['encodings'], people))
             face_array = face_recognition.compare_faces(people_encodings, unknown_encodings)
-            index = face_array.index(True)
+            index = None
+            if True in face_array:
+                index = face_array.index(True)
             if index is not None:
                 return {
                     "success": True,
