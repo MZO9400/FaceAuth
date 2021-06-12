@@ -7,10 +7,11 @@ import cv2
 
 
 class FaceVerificationClient:
-    def __init__(self, window, window_title="Authentication Client", video_source=0):
+    def __init__(self, window, window_title="Authentication Client", video_source=0, api="http://localhost:5000"):
         self.window = window
         self.window.title(window_title)
         self.video_source = video_source
+        self.api = api
 
         self.vid = VideoProcessor(self.video_source)
 
