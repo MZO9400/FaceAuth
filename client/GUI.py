@@ -64,7 +64,37 @@ class FaceVerificationClient:
         self.vid.enable_video_source()
 
     def signup(self):
-        pass
+        self.vid.disable_video_source()
+        name = self.username_input.get()
+        if not name:
+            tkinter.messagebox.showerror(title="Registration failed", message="Username is invalid")
+            self.vid.enable_video_source()
+            return
+        if self.last_frame is None:
+            tkinter.messagebox.showerror(title="Registration failed", message="Could not find image")
+            self.vid.enable_video_source()
+            return
+        data = {
+            "username": name,
+            "image": self.encode_last_frame()
+        }
+        response = requests.post(self.api + "/register", data=data)
+        response = response.json()
+        if not response['success']:
+            tkinter.messagebox.showerror(
+                title="Code {}".format(response['code']),
+                message=response['error']
+            )
+        else:
+            tkinter.messagebox.showinfo(
+                title="Success",
+                message="You have been registered"
+            )
+        self.vid.enable_video_source()
+
+    def encode_last_frame(self):
+        encoded = cv2.imencode('.png', self.last_frame)
+        return base64.b64encode(encoded[1])
 
     def process_face(self, frame):
         locations = face_recognition.face_locations(frame)
