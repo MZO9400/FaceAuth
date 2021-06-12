@@ -6,6 +6,9 @@ class FaceVerification:
         self.client = client
 
     def registration(self, username, image):
+        auth_response = self.authenticate(image)
+        if auth_response['success']:
+            return {'success': False, "error": "Face already in database"}
         if not self.client.is_unique(username):
             return {
                 "success": False,
