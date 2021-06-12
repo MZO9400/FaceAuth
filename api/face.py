@@ -42,9 +42,10 @@ class FaceVerification:
                     "error": "Username not found"
                 }
             comparison_results = face_recognition.compare_faces([person['encodings']], unknown_encodings)
-            return {
-                "success": comparison_results[0]
-            }
+            if True in comparison_results:
+                return {
+                    "success": True
+                }
         else:
             people = list(self.client.fetch())
             people_encodings = list(map(lambda row: row['encodings'], people))
