@@ -7,7 +7,7 @@ import face_recognition
 import requests
 from PIL import ImageTk, Image
 
-from VideoProcessor import VideoProcessor
+from client.VideoProcessor import VideoProcessor
 
 
 class FaceVerificationClient:
