@@ -18,11 +18,6 @@ face_verification = FaceVerification(
 )
 
 
-@app.route("/register", methods=["GET"])
-def register_get():
-    return render_template('authenticate.html', URL='/register')
-
-
 @app.route('/register', methods=["POST"])
 def register_post():
     username = request.form.get('username')
@@ -35,11 +30,6 @@ def register_post():
     else:
         registration_response.update({"code": 400})
     return json.dumps(registration_response)
-
-
-@app.route("/login", methods=["GET"])
-def login_get():
-    return render_template('authenticate.html', URL='/login')
 
 
 @app.route('/login', methods=["POST"])
