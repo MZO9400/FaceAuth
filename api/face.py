@@ -18,7 +18,7 @@ class FaceVerification:
             }
         insert = self.client.insert({
             "username": username,
-            "encodings": self.get_facial_structure(image).tolist()
+            "encodings": self.get_facial_structure(image)
         })
         return {
             "success": insert
