@@ -1,4 +1,6 @@
 import tkinter
+
+import face_recognition
 from PIL import ImageTk
 from PIL import Image
 import cv2
@@ -29,6 +31,7 @@ class FaceVerificationClient:
 
         self.photo = None
         self.last_frame = None
+        self.frame_count = 0
 
         self.window.mainloop()
 
@@ -38,11 +41,19 @@ class FaceVerificationClient:
     def signup(self):
         pass
 
+    def process_face(self, frame):
+        locations = face_recognition.face_locations(frame)
+        if len(locations) == 1:
+            self.last_frame = frame
+
     def update(self):
         ret, frame = self.vid.get_frame()
+        self.frame_count += 1
         if ret:
             half_image = cv2.resize(frame, (0, 0), fx=0.5, fy=0.5)
-            self.last_frame = half_image
+            if self.frame_count % 3 == 0:
+                self.frame_count = 0
+                self.process_face(frame)
             self.photo = ImageTk.PhotoImage(image=Image.fromarray(half_image))
             self.canvas.create_image(0, 0, image=self.photo, anchor=tkinter.NW)
 
