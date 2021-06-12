@@ -48,13 +48,17 @@ class FaceVerificationClient:
             self.last_frame = frame
 
     def update(self):
-        ret, frame = self.vid.get_frame()
+        cam_response = self.vid.get_frame()
+        if not cam_response:
+            self.window.after(self.delay, self.update)
+            return
+        ret, frame = cam_response
         self.frame_count += 1
         if ret:
             half_image = cv2.resize(frame, (0, 0), fx=0.5, fy=0.5)
-            if self.frame_count % 3 == 0:
+            if self.frame_count % 3 == 0 or self.last_frame is None:
                 self.frame_count = 0
-                self.process_face(frame)
+                self.process_face(cv2.resize(half_image, (0, 0), fx=0.5, fy=0.5))
             self.photo = ImageTk.PhotoImage(image=Image.fromarray(half_image))
             self.canvas.create_image(0, 0, image=self.photo, anchor=tkinter.NW)
 
