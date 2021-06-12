@@ -1,5 +1,8 @@
+import base64
+import json
+
+import cv2
 import numpy as np
-from PIL import Image
 from decouple import config
 from flask import Flask, render_template, request
 
@@ -41,9 +44,12 @@ def login_post():
     username = None
     if request.form['username']:
         username = request.form.get('username')
-    image = request.files['image']
-    img = Image.open(image).convert('RGB')
+    image = request.form['image']
+    img = base64.b64decode(image)
+    img = cv2.imdecode(np.fromstring(img, np.uint8), cv2.IMREAD_ANYCOLOR)
     auth_response = face_verification.authenticate(image=np.array(img), username=username)
     if auth_response['success']:
-        return {"code": 200}.update(auth_response)
-    return {"code": 400}.update(auth_response)
+        auth_response.update({"code": 200})
+    else:
+        auth_response.update({"code": 400})
+    return json.dumps(auth_response)
