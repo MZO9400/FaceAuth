@@ -27,12 +27,12 @@ class FaceVerificationClient:
         self.username_input = tkinter.Entry(window, textvariable=self.username_string)
         self.username_input.grid(row=2, column=1)
 
-        self.delay = 1
-        self.update()
-
         self.photo = None
         self.last_frame = None
         self.frame_count = 0
+
+        self.delay = 100
+        self.update()
 
         self.window.mainloop()
 
