@@ -39,6 +39,8 @@ class FaceVerificationClient:
         self.delay = 100
         self.update()
 
+        self.api_health_check()
+
         self.window.mainloop()
 
     def login(self):
@@ -121,6 +123,18 @@ class FaceVerificationClient:
             self.canvas.create_image(0, 0, image=self.photo, anchor=tkinter.NW)
 
         self.window.after(self.delay, self.update)
+
+    def api_health_check(self):
+        try:
+            response = requests.get(self.api)
+            response = response.json()
+            if response['success']:
+                return True
+            else:
+                raise Exception("Backend returned non-success value")
+        except:
+            tkinter.messagebox.showerror("API Failure", "Please check if backend is running and is accessible")
+            return False
 
     def close_window(self):
         self.vid.disable_video_source()
