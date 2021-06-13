@@ -1,4 +1,5 @@
 import base64
+import threading
 import tkinter
 import tkinter.messagebox
 from requests.exceptions import ConnectionError
@@ -9,6 +10,13 @@ import requests
 from PIL import ImageTk, Image
 
 from client.VideoProcessor import VideoProcessor
+
+
+def run_thread(func, args=None):
+    if args is None:
+        args = []
+    th = threading.Thread(target=func, args=args)
+    th.start()
 
 
 class FaceVerificationClient:
@@ -24,9 +32,10 @@ class FaceVerificationClient:
         self.canvas = tkinter.Canvas(window, width=self.vid.width / 2, height=self.vid.height / 2)
         self.canvas.grid(column=1, row=1)
 
-        self.btn_login = tkinter.Button(window, text="Login", width=50, command=self.login)
+        self.btn_login = tkinter.Button(window, text="Login", width=50, command=lambda: run_thread(self.login))
         self.btn_login.grid(row=2, column=0)
-        self.btn_signup = tkinter.Button(window, text="Sign up", width=50, command=self.signup)
+
+        self.btn_signup = tkinter.Button(window, text="Sign up", width=50, command=lambda: run_thread(self.signup))
         self.btn_signup.grid(row=2, column=2)
 
         self.username_string = tkinter.StringVar(window)
@@ -40,13 +49,12 @@ class FaceVerificationClient:
         self.delay = 100
         self.update()
 
-        self.api_health_check()
+        run_thread(self.api_health_check)
 
         self.window.mainloop()
 
     def login(self):
         try:
-            self.vid.disable_video_source()
             if self.last_frame is None:
                 tkinter.messagebox.showerror(title="Authentication failed", message="Could not find image")
                 self.vid.enable_video_source()
@@ -72,12 +80,9 @@ class FaceVerificationClient:
                 title="API Failure",
                 message="Backend API did not respond"
             )
-        finally:
-            self.vid.enable_video_source()
 
     def signup(self):
         try:
-            self.vid.disable_video_source()
             name = self.username_input.get()
             if not name:
                 tkinter.messagebox.showerror(title="Registration failed", message="Username is invalid")
@@ -108,8 +113,6 @@ class FaceVerificationClient:
                 title="API Failure",
                 message="Backend API did not respond"
             )
-        finally:
-            self.vid.enable_video_source()
 
     def encode_last_frame(self):
         encoded = cv2.imencode('.png', self.last_frame)
@@ -133,7 +136,7 @@ class FaceVerificationClient:
             half_image = cv2.resize(frame, (0, 0), fx=0.5, fy=0.5)
             if self.frame_count % 3 == 0 or self.last_frame is None:
                 self.frame_count = 0
-                self.process_face(cv2.resize(half_image, (0, 0), fx=0.5, fy=0.5))
+                run_thread(lambda: self.process_face(cv2.resize(half_image, (0, 0), fx=0.5, fy=0.5)))
             self.photo = ImageTk.PhotoImage(image=Image.fromarray(half_image))
             self.canvas.create_image(0, 0, image=self.photo, anchor=tkinter.NW)
 
