@@ -46,6 +46,8 @@ class FaceVerificationClient:
         self.last_frame = None
         self.frame_count = 0
 
+        self.is_request = False
+
         self.delay = 100
         self.update()
 
@@ -54,6 +56,8 @@ class FaceVerificationClient:
         self.window.mainloop()
 
     def login(self):
+        if self.is_request:
+            return
         try:
             if self.last_frame is None:
                 tkinter.messagebox.showerror(title="Authentication failed", message="Could not find image")
@@ -63,7 +67,9 @@ class FaceVerificationClient:
                 "username": self.username_input.get(),
                 "image": self.encode_last_frame()
             }
+            self.is_request = True
             response = requests.post(self.api + "/login", data=data)
+            self.is_request = False
             response = response.json()
             if not response['success']:
                 tkinter.messagebox.showerror(
@@ -82,6 +88,8 @@ class FaceVerificationClient:
             )
 
     def signup(self):
+        if self.is_request:
+            return
         try:
             name = self.username_input.get()
             if not name:
@@ -96,7 +104,9 @@ class FaceVerificationClient:
                 "username": name,
                 "image": self.encode_last_frame()
             }
+            self.is_request = True
             response = requests.post(self.api + "/register", data=data)
+            self.is_request = False
             response = response.json()
             if not response['success']:
                 tkinter.messagebox.showerror(
@@ -122,7 +132,7 @@ class FaceVerificationClient:
         locations = face_recognition.face_locations(frame)
         if len(locations) == 1:
             self.last_frame = frame
-            if self.username_string.get() == '':
+            if self.username_string.get() == '' and not self.is_request:
                 try:
                     data = {
                         "username": self.username_input.get(),
@@ -130,8 +140,8 @@ class FaceVerificationClient:
                     }
                     self.is_request = True
                     response = requests.post(self.api + "/login", data=data)
-                    response = response.json()
                     self.is_request = False
+                    response = response.json()
                     if response['username']:
                         self.username_input.delete(0, tkinter.END)
                         self.username_input.insert(0, response['username'])
@@ -158,8 +168,12 @@ class FaceVerificationClient:
         self.window.after(self.delay, self.update)
 
     def api_health_check(self):
+        if self.is_request:
+            return
         try:
+            self.is_request = True
             response = requests.get(self.api)
+            self.is_request = False
             response = response.json()
             if response['success']:
                 return True
