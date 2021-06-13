@@ -14,6 +14,7 @@ class FaceVerificationClient:
     def __init__(self, window, window_title="Authentication Client", video_source=0, api="http://localhost:5000"):
         self.window = window
         self.window.title(window_title)
+        self.window.protocol("WM_DELETE_WINDOW", self.close_window)
         self.video_source = video_source
         self.api = api
 
@@ -120,3 +121,7 @@ class FaceVerificationClient:
             self.canvas.create_image(0, 0, image=self.photo, anchor=tkinter.NW)
 
         self.window.after(self.delay, self.update)
+
+    def close_window(self):
+        self.vid.disable_video_source()
+        self.window.destroy()
