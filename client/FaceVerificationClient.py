@@ -1,6 +1,7 @@
 import base64
 import tkinter
 import tkinter.messagebox
+from requests.exceptions import ConnectionError
 
 import cv2
 import face_recognition
@@ -44,57 +45,71 @@ class FaceVerificationClient:
         self.window.mainloop()
 
     def login(self):
-        self.vid.disable_video_source()
-        if self.last_frame is None:
-            tkinter.messagebox.showerror(title="Authentication failed", message="Could not find image")
-            self.vid.enable_video_source()
-            return
-        data = {
-            "username": self.username_input.get(),
-            "image": self.encode_last_frame()
-        }
-        response = requests.post(self.api + "/login", data=data)
-        response = response.json()
-        if not response['success']:
+        try:
+            self.vid.disable_video_source()
+            if self.last_frame is None:
+                tkinter.messagebox.showerror(title="Authentication failed", message="Could not find image")
+                self.vid.enable_video_source()
+                return
+            data = {
+                "username": self.username_input.get(),
+                "image": self.encode_last_frame()
+            }
+            response = requests.post(self.api + "/login", data=data)
+            response = response.json()
+            if not response['success']:
+                tkinter.messagebox.showerror(
+                    title="Code {}".format(response['code']),
+                    message=response['error']
+                )
+            else:
+                tkinter.messagebox.showinfo(
+                    title="Success",
+                    message=response['username'] if 'username' in response else "Username checks out"
+                )
+        except ConnectionError:
             tkinter.messagebox.showerror(
-                title="Code {}".format(response['code']),
-                message=response['error']
+                title="API Failure",
+                message="Backend API did not respond"
             )
-        else:
-            tkinter.messagebox.showinfo(
-                title="Success",
-                message=response['username'] if 'username' in response else "Username checks out"
-            )
-        self.vid.enable_video_source()
+        finally:
+            self.vid.enable_video_source()
 
     def signup(self):
-        self.vid.disable_video_source()
-        name = self.username_input.get()
-        if not name:
-            tkinter.messagebox.showerror(title="Registration failed", message="Username is invalid")
-            self.vid.enable_video_source()
-            return
-        if self.last_frame is None:
-            tkinter.messagebox.showerror(title="Registration failed", message="Could not find image")
-            self.vid.enable_video_source()
-            return
-        data = {
-            "username": name,
-            "image": self.encode_last_frame()
-        }
-        response = requests.post(self.api + "/register", data=data)
-        response = response.json()
-        if not response['success']:
+        try:
+            self.vid.disable_video_source()
+            name = self.username_input.get()
+            if not name:
+                tkinter.messagebox.showerror(title="Registration failed", message="Username is invalid")
+                self.vid.enable_video_source()
+                return
+            if self.last_frame is None:
+                tkinter.messagebox.showerror(title="Registration failed", message="Could not find image")
+                self.vid.enable_video_source()
+                return
+            data = {
+                "username": name,
+                "image": self.encode_last_frame()
+            }
+            response = requests.post(self.api + "/register", data=data)
+            response = response.json()
+            if not response['success']:
+                tkinter.messagebox.showerror(
+                    title="Code {}".format(response['code']),
+                    message=response['error']
+                )
+            else:
+                tkinter.messagebox.showinfo(
+                    title="Success",
+                    message="You have been registered"
+                )
+        except ConnectionError:
             tkinter.messagebox.showerror(
-                title="Code {}".format(response['code']),
-                message=response['error']
+                title="API Failure",
+                message="Backend API did not respond"
             )
-        else:
-            tkinter.messagebox.showinfo(
-                title="Success",
-                message="You have been registered"
-            )
-        self.vid.enable_video_source()
+        finally:
+            self.vid.enable_video_source()
 
     def encode_last_frame(self):
         encoded = cv2.imencode('.png', self.last_frame)
