@@ -122,6 +122,21 @@ class FaceVerificationClient:
         locations = face_recognition.face_locations(frame)
         if len(locations) == 1:
             self.last_frame = frame
+            if self.username_string.get() == '':
+                try:
+                    data = {
+                        "username": self.username_input.get(),
+                        "image": self.encode_last_frame()
+                    }
+                    self.is_request = True
+                    response = requests.post(self.api + "/login", data=data)
+                    response = response.json()
+                    self.is_request = False
+                    if response['username']:
+                        self.username_input.delete(0, tkinter.END)
+                        self.username_input.insert(0, response['username'])
+                except:
+                    return
         else:
             self.last_frame = None
 
