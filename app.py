@@ -46,3 +46,8 @@ def login_post():
     else:
         auth_response.update({"code": 400})
     return json.dumps(auth_response)
+
+
+@app.route('/', methods=["GET"])
+def health_check():
+    return {"success": True}
