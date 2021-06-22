@@ -5,7 +5,7 @@
 - MongoDB for database
 - Tkinter GUI maker for front-end Client
 
-##.env:
+## .env:
 ```
 DATABASE_URI=<MONGODB_URI>
 ```
