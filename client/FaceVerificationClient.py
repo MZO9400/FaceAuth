@@ -56,8 +56,6 @@ class FaceVerificationClient:
         self.window.mainloop()
 
     def login(self):
-        if self.is_request:
-            return
         try:
             if self.last_frame is None:
                 tkinter.messagebox.showerror(title="Authentication failed", message="Could not find image")
@@ -88,8 +86,6 @@ class FaceVerificationClient:
             )
 
     def signup(self):
-        if self.is_request:
-            return
         try:
             name = self.username_input.get()
             if not name:
